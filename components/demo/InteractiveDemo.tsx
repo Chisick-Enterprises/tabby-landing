@@ -1303,28 +1303,27 @@ const NARRATIVES: Record<Screen, { eyebrow: string; title: string; body: string;
 function PhoneShell({ children }: { children: React.ReactNode }) {
   // Outer aspect locked to the iPhone 17 SVG bezel (450×920). Width-only
   // sizing comes from .demo-phone-shell — the aspect inline style here
-  // takes care of the height. The bezel's dynamic island is part of the
-  // SVG itself, so no faux notch is rendered here.
+  // takes care of the height. Below md the SVG bezel is hidden so real
+  // phones don't get a phone-in-phone; screen box + typography unchanged.
   return (
     <div
       className="demo-phone-shell relative mx-auto"
       style={{ aspectRatio: PHONE_ASPECT }}
     >
-      {/* warm halo behind the device */}
+      {/* warm halo behind the device — hidden on mobile */}
       <div
         aria-hidden
-        className="absolute -inset-12 rounded-full blur-3xl pointer-events-none"
+        className="absolute -inset-12 rounded-full blur-3xl pointer-events-none hidden md:block"
         style={{
           background:
             "radial-gradient(circle at 50% 35%, rgba(255,124,97,0.32), transparent 60%)",
         }}
       />
 
-      {/* drop shadow for the device — sits behind the SVG so the bezel's
-          natural transparency doesn't get a hard rectangular shadow */}
+      {/* drop shadow for the device — hidden on mobile */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none hidden md:block"
         style={{
           filter: "drop-shadow(0 60px 80px rgba(14,14,14,0.45))",
         }}
@@ -1354,13 +1353,12 @@ function PhoneShell({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* Bezel overlay — stacks on top of screen content so the silver
-          chassis edges and dynamic island sit above the screen */}
+      {/* Bezel overlay — hidden on mobile */}
       <img
         src={PHONE_FRAME_SRC}
         alt=""
         aria-hidden
-        className="absolute inset-0 w-full h-full pointer-events-none select-none"
+        className="absolute inset-0 w-full h-full pointer-events-none select-none hidden md:block"
         draggable={false}
       />
     </div>

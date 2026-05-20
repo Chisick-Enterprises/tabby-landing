@@ -4,6 +4,16 @@ Hey. Quick rundown of what I changed today, in plain English. No tech jargon.
 
 ---
 
+## Typography — restored OG Cabinet Grotesk
+
+The CLS pass added an Arial-based **Cabinet Grotesk Fallback** face that was rendering instead of the real font (especially visible on `/demo` mobile). Reverted to the original setup: blocking `@import` at the top of `globals.css`, no fallback face, no duplicate `<link>` in `layout.tsx`.
+
+---
+
+On a real phone, `/demo` was showing the interactive walkthrough **inside an iPhone SVG** — felt like a phone inside your phone. Below tablet width the iPhone SVG bezel is hidden on `/demo` (no phone-in-phone). Shell sizing, screen insets, and `cqw` typography are **unchanged** — only the decorative frame art is toggled off.
+
+---
+
 ## Homepage speed — FCP & LCP pass
 
 Vercel Speed Insights flagged the homepage with **poor FCP (~3.2s) and LCP (~7.6s)**. CLS/TTFB/INP were already fine.
