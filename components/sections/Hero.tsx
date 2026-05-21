@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
 import { AnimatePresence, motion } from "motion/react";
 import { ClawReveal } from "@/components/ClawReveal";
 import { Phone } from "@/components/Phone";
@@ -20,14 +19,9 @@ import { track, useSectionViewed } from "@/lib/analytics";
 const CODED_VARIANTS = new Set<ScreenVariant>();
 
 const START_PHONE = 8;
-const prefersReducedMotion = () =>
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export function Hero() {
   const sectionRef = useSectionViewed<HTMLElement>("hero");
-  const subRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-
   const viewportRef = useRef<HTMLDivElement>(null); // outer overflow-hidden box
   const trackRef = useRef<HTMLDivElement>(null);    // inner flex track
   const phonesRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -35,24 +29,6 @@ export function Hero() {
   const [offset, setOffset] = useState(0);
   const [hasCenteredTrack, setHasCenteredTrack] = useState(false);
   const [lightbox, setLightbox] = useState<ScreenVariant | null>(null);
-
-  // Hero entrance fade-ins — wait for the claw swipes to finish drawing so
-  // the CTA doesn't clash with the headline animation.
-  useEffect(() => {
-    if (prefersReducedMotion()) return;
-
-    if (subRef.current) gsap.set(subRef.current, { opacity: 0, y: 14 });
-    if (ctaRef.current) gsap.set(ctaRef.current, { opacity: 0, y: 14 });
-
-    const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-    if (subRef.current)
-      tl.fromTo(subRef.current, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.52 }, 0.42);
-    if (ctaRef.current)
-      tl.fromTo(ctaRef.current, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.52 }, 0.54);
-    return () => {
-      tl.kill();
-    };
-  }, []);
 
   // Compute the translateX needed to center phone `idx` inside the viewport
   const computeOffset = (idx: number) => {
@@ -216,18 +192,12 @@ export function Hero() {
         </h1>
 
         <div className="mt-8 lg:mt-10 flex flex-col items-center text-center gap-7">
-          <p
-            ref={subRef}
-            className="text-lg md:text-xl text-body/70 max-w-md leading-[1.5]"
-          >
+          <p className="hero-enter hero-enter-sub text-lg md:text-xl text-body/70 max-w-md leading-[1.5]">
             Split the check and pay it in one app. No chasing payments after
             the meal.
           </p>
 
-          <div
-            ref={ctaRef}
-            className="flex items-stretch sm:items-center w-full sm:w-auto max-w-[340px] sm:max-w-none"
-          >
+          <div className="hero-enter hero-enter-cta flex items-stretch sm:items-center w-full sm:w-auto max-w-[340px] sm:max-w-none">
             <Magnetic strength={0.3} className="w-full sm:w-auto">
               <Link
                 href="/waitlist"

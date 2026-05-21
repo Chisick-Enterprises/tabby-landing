@@ -4,6 +4,22 @@ Hey. Quick rundown of what I changed today, in plain English. No tech jargon.
 
 ---
 
+## Homepage perf — claw animation + FCP/LCP pass (Speed Insights follow-up)
+
+Vercel Speed Insights still flagged **FCP (~1.8s)** and **LCP (~2.6s)** on desktop `/`; the hero **claw scratch animation** could flash, stay invisible, or start late because it only ran after React hydration + GSAP.
+
+**Fixes:**
+
+- **Claw scratches are CSS-first** (`pathLength=1` + keyframes in `globals.css`) — no GSAP on the hero headline; draws on first paint without a hydration gap.
+- **Hero subcopy + CTA** use `.hero-enter` CSS (hidden until `body.ready`) instead of GSAP hiding them *after* first paint.
+- **Preloads** in `layout.tsx`: Cabinet Grotesk Bold + Medium `.woff` files and `/screens/settle.webp` (active carousel screen) — blocking `@import` in `globals.css` unchanged per AGENTS.md.
+- **PostHog** init deferred via `requestIdleCallback` so it does not compete with hero paint.
+- Removed unused `gsap` import from `Hero.tsx`.
+
+Verification: `pnpm run typecheck` and `pnpm build` pass. Re-check Speed Insights on `/` after deploy (~24h for real-user data).
+
+---
+
 ## Typography — restored OG Cabinet Grotesk
 
 The CLS pass added an Arial-based **Cabinet Grotesk Fallback** face that was rendering instead of the real font (especially visible on `/demo` mobile). Reverted to the original setup: blocking `@import` at the top of `globals.css`, no fallback face, no duplicate `<link>` in `layout.tsx`.

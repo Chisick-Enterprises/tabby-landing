@@ -1,8 +1,8 @@
 "use client";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 export function Ready() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.body.classList.add("ready");
   }, []);
   return null;

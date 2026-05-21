@@ -31,6 +31,11 @@ export const metadata: Metadata = {
   },
 };
 
+const CABINET_BOLD_WOFF =
+  "https://fonts.cdnfonts.com/s/85514/CabinetGrotesk-Bold.woff";
+const CABINET_MEDIUM_WOFF =
+  "https://fonts.cdnfonts.com/s/85514/CabinetGrotesk-Medium.woff";
+
 export default function RootLayout({
   children,
 }: {
@@ -38,6 +43,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href={CABINET_BOLD_WOFF}
+          as="font"
+          type="font/woff"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href={CABINET_MEDIUM_WOFF}
+          as="font"
+          type="font/woff"
+          crossOrigin="anonymous"
+        />
+        <link rel="preload" href="/screens/settle.webp" as="image" />
+      </head>
       <body>
         <PostHogProvider>
           <Ready />
