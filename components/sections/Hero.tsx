@@ -262,7 +262,6 @@ export function Hero() {
           >
             {PHONE_VARIANTS.map((variant, i) => {
               const isActive = i === activeIdx;
-              const isNearActive = Math.abs(i - activeIdx) <= 2;
               const isPremium = PREMIUM_VARIANTS.has(variant);
               return (
                 <div
@@ -291,14 +290,7 @@ export function Hero() {
                       }}
                     />
                   )}
-                  {isNearActive ? (
-                    <Phone variant={variant} priority={isActive} />
-                  ) : (
-                    <div
-                      aria-hidden
-                      className="phone-card relative aspect-[9/19.5] rounded-[1.75rem] bg-white/80"
-                    />
-                  )}
+                  <Phone variant={variant} priority={isActive} />
                   {isPremium && (
                     <span className="absolute -top-2 -right-2 z-10 bg-accent text-white text-[0.58rem] uppercase tracking-[0.22em] font-bold px-2.5 py-[5px] rounded-full shadow-[0_4px_10px_rgba(255,124,97,0.35)] select-none whitespace-nowrap">
                       Pro · Coming later

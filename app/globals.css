@@ -234,22 +234,46 @@ html.lenis body { height: auto; }
    each side) leave a smaller inner content area, so we widen the outer
    to keep the screen content visually similar. */
 .demo-phone-shell {
-  /* Nav/Footer hidden on /demo — only narrative + page padding to reserve.
-     Reserve accounts for page padding, top bar, top bar margin-bottom,
-     optional "Pro · Coming later" pill row, and bottom padding. */
+  /* Mobile: no bezel. Size the screen so the whole demo fits in ONE viewport
+     with no page scroll — the phone sits fully ABOVE the floating step bar so
+     the controls are never in the way and the user can't scroll past them.
+     The reserve accounts for the top bar, page padding, and the fixed step
+     bar at the bottom. Width still caps it so it never exceeds the viewport. */
   width: min(
-    calc((100svh - 180px) * 450 / 920),
-    calc(100vw - 32px),
-    500px
+    calc(100vw - 16px),
+    calc((100svh - 216px) * 450 / 920),
+    600px
   );
 }
 @media (min-width: 768px) {
   .demo-phone-shell {
+    /* md+: the SVG bezel is shown again, so reserve more padding and cap
+       the width to keep the device looking like a device on desktop. */
     width: min(
       calc((100svh - 126px) * 450 / 920),
       calc(100vw - 64px),
       520px
     );
+  }
+}
+
+/* Demo screen surface. Below md it's full-bleed (edge-to-edge of the shell)
+   with a soft crafted edge so it sits cleanly on the page background. At md+
+   it snaps back to the bezel cutout insets/radius driven by CSS vars set in
+   PhoneShell. */
+.demo-screen-box {
+  inset: 0;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(14, 14, 14, 0.06);
+  box-shadow: 0 30px 70px -34px rgba(14, 14, 14, 0.5);
+}
+@media (min-width: 768px) {
+  .demo-screen-box {
+    inset: var(--screen-top) var(--screen-right) var(--screen-bottom)
+      var(--screen-left);
+    border-radius: var(--screen-radius);
+    border: 0;
+    box-shadow: none;
   }
 }
 

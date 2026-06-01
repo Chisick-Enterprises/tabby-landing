@@ -950,23 +950,37 @@ function MobileDemoBar({
 
   const isFirst = stepIdx === 0;
   const isLast = stepIdx === STEP_ORDER.length - 1;
+  const n = NARRATIVES[screen];
 
   return (
     <div
       className="fixed left-3 right-3 z-50 lg:hidden rounded-2xl border border-line/12 bg-white/94 px-3 pb-3 pt-2.5 shadow-[0_18px_48px_-18px_rgba(14,14,14,0.38)] backdrop-blur"
       style={{ bottom: "max(env(safe-area-inset-bottom), 0.75rem)" }}
     >
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-body/45 tabular-nums">
-          {String(stepIdx + 1).padStart(2, "0")}/{STEP_ORDER.length}
-        </span>
-        <button
-          type="button"
-          onClick={onSkipToRecap}
-          className="min-h-8 rounded-full px-2.5 text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-body/50 transition-colors active:bg-body/8 active:text-body"
-        >
-          Skip recap
-        </button>
+      {/* Scene caption — the narrative panel is hidden below lg, so the
+          per-scene title/eyebrow lives here to keep context without forcing
+          the user to scroll. */}
+      <div className="mb-2 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[0.56rem] font-semibold uppercase tracking-[0.22em] text-accent/85 truncate">
+            {n.eyebrow}
+          </div>
+          <div className="mt-0.5 font-grotesk text-[0.95rem] font-bold leading-tight text-body truncate">
+            {n.title}
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-body/45 tabular-nums">
+            {String(stepIdx + 1).padStart(2, "0")}/{STEP_ORDER.length}
+          </span>
+          <button
+            type="button"
+            onClick={onSkipToRecap}
+            className="min-h-8 rounded-full px-2.5 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-body/50 transition-colors active:bg-body/8 active:text-body"
+          >
+            Skip
+          </button>
+        </div>
       </div>
 
       <div className="mb-3 h-1 overflow-hidden rounded-full bg-body/10">
@@ -1066,7 +1080,7 @@ function NarrativePanel({
       : (stepIdx - phaseStart) / (phaseEnd - phaseStart);
 
   return (
-    <aside className={clsx("relative w-full flex flex-col lg:h-full lg:justify-center", className)}>
+    <aside className={clsx("relative w-full hidden flex-col lg:flex lg:h-full lg:justify-center", className)}>
       {/* Phase chip — only animates when the *phase* actually changes,
           not on every scene step. Keyed on phase, not screen. */}
       <AnimatePresence mode="wait" initial={false}>
@@ -1303,8 +1317,10 @@ const NARRATIVES: Record<Screen, { eyebrow: string; title: string; body: string;
 function PhoneShell({ children }: { children: React.ReactNode }) {
   // Outer aspect locked to the iPhone 17 SVG bezel (450×920). Width-only
   // sizing comes from .demo-phone-shell — the aspect inline style here
-  // takes care of the height. Below md the SVG bezel is hidden so real
-  // phones don't get a phone-in-phone; screen box + typography unchanged.
+  // takes care of the height. Below md the SVG bezel is hidden and the
+  // screen goes full-bleed (see `.demo-screen-box`) so real phones get the
+  // app filling the viewport, not a small phone card. At md+ the bezel and
+  // its cutout insets return.
   return (
     <div
       className="demo-phone-shell relative mx-auto"
@@ -1337,15 +1353,19 @@ function PhoneShell({ children }: { children: React.ReactNode }) {
         />
       </div>
 
-      {/* Inner screen content — clipped to the bezel cutout */}
+      {/* Inner screen content. On md+ it's clipped to the bezel cutout via
+          the inset/radius vars in `.demo-screen-box`. Below md the bezel is
+          gone, so the screen goes full-bleed (edge-to-edge of the shell) and
+          reads as the app itself rather than a tiny phone screen floating in
+          the page. */}
       <div
-        className="absolute overflow-hidden"
+        className="demo-screen-box absolute overflow-hidden"
         style={{
-          top: PHONE_INSETS.top,
-          bottom: PHONE_INSETS.bottom,
-          left: PHONE_INSETS.left,
-          right: PHONE_INSETS.right,
-          borderRadius: PHONE_INSETS.radius,
+          ["--screen-top" as string]: PHONE_INSETS.top,
+          ["--screen-bottom" as string]: PHONE_INSETS.bottom,
+          ["--screen-left" as string]: PHONE_INSETS.left,
+          ["--screen-right" as string]: PHONE_INSETS.right,
+          ["--screen-radius" as string]: PHONE_INSETS.radius,
           background: T.cream,
           containerType: "inline-size",
         }}

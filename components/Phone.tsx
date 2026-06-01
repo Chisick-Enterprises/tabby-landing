@@ -89,6 +89,8 @@ export function Phone({
           <img
             src={src}
             alt={`Tabby ${variant} screen`}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
             className="block w-full h-auto pointer-events-none phone-tall-scroll"
             draggable={false}
           />
@@ -99,6 +101,7 @@ export function Phone({
           alt={`Tabby ${variant} screen`}
           fill
           priority={priority}
+          loading={priority ? undefined : "lazy"}
           sizes="(max-width: 768px) 70vw, 215px"
           className="object-cover pointer-events-none"
         />

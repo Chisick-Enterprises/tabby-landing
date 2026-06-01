@@ -91,31 +91,36 @@ type Props = {
           dark ? "pt-12 lg:pt-16 pb-20 lg:pb-28" : "pt-20 lg:pt-28 pb-20 lg:pb-28",
         )}
       >
-        <div className="relative">
+        {/* Quote frame — hairlines + headline share one centered column so
+            rules and type stay aligned (fluid WordFlip was drifting right
+            when only the h2 had text-center). */}
+        <div className="relative mx-auto w-full max-w-[min(640px,92vw)]">
           <div
             aria-hidden
             className={clsx(
-              "fs-rise absolute top-0 left-1/2 -translate-x-1/2 h-px",
+              "fs-rise h-px w-full",
               dark ? "bg-cream/12" : "bg-body/15",
             )}
-            style={{ width: "min(640px, 90%)" }}
           />
 
           <h2
             className={clsx(
-              "fs-rise font-grotesk font-bold leading-[1.2] text-center mx-auto py-10 sm:py-12 lg:py-16",
+              "fs-rise font-grotesk font-bold",
+              "flex flex-col items-center",
+              "py-12 sm:py-14 lg:py-20",
+              "leading-[1.08] sm:leading-[1.06]",
               "tracking-[-0.025em]",
               dark ? "text-cream" : "text-body",
             )}
             style={{ fontSize: "clamp(1.95rem, 6vw, 6.25rem)" }}
           >
-            <div className="md:whitespace-nowrap">
+            <span className="block text-center md:whitespace-nowrap">
               Don&apos;t pay for their{" "}
               <span className="italic font-medium text-accent">
-                <WordFlip words={LUXURY} index={idx} />
+                <WordFlip words={LUXURY} index={idx} fluid />
               </span>
-            </div>
-            <div className="mt-1 sm:mt-2 md:whitespace-nowrap">
+            </span>
+            <span className="block text-center mt-4 sm:mt-5 lg:mt-6 md:whitespace-nowrap">
               when you had{" "}
               <span
                 className={clsx(
@@ -126,19 +131,19 @@ type Props = {
                 <WordFlip
                   words={HUMBLE}
                   index={idx}
+                  fluid
                   suffix={<span className="text-accent">.</span>}
                 />
               </span>
-            </div>
+            </span>
           </h2>
 
           <div
             aria-hidden
             className={clsx(
-              "fs-rise absolute bottom-0 left-1/2 -translate-x-1/2 h-px",
+              "fs-rise h-px w-full",
               dark ? "bg-cream/12" : "bg-body/15",
             )}
-            style={{ width: "min(640px, 90%)" }}
           />
         </div>
 

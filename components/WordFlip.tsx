@@ -20,6 +20,12 @@ type Props = {
    * visible word, not to the locked cell.
    */
   renderOverlay?: () => ReactNode;
+  /**
+   * When true, width hugs the in-progress typewriter string instead of
+   * locking to the widest word in the list. Use in running prose (e.g.
+   * FlipStatement) so "their [word]" doesn't leave a huge gap.
+   */
+  fluid?: boolean;
 };
 
 const TYPE_MS = 70;
@@ -40,6 +46,7 @@ export function WordFlip({
   className,
   suffix,
   renderOverlay,
+  fluid = false,
 }: Props) {
   const [auto, setAuto] = useState(0);
   useEffect(() => {
@@ -100,6 +107,39 @@ export function WordFlip({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [target]);
 
+  const caret = (
+    <span
+      aria-hidden
+      className="wf-caret inline-block align-baseline shrink-0"
+      style={{
+        width: "0.06em",
+        height: "0.95em",
+        marginLeft: "0.05em",
+        transform: "translateY(0.12em)",
+        backgroundColor: "currentColor",
+        opacity: 0.85,
+      }}
+    />
+  );
+
+  if (fluid) {
+    return (
+      <span
+        className={clsx(
+          "relative inline-flex items-baseline whitespace-nowrap",
+          className,
+        )}
+      >
+        <span className="relative inline-flex items-baseline">
+          <span className="inline-block">{displayed}</span>
+          {caret}
+          {renderOverlay?.()}
+        </span>
+        {suffix}
+      </span>
+    );
+  }
+
   return (
     <span
       className={clsx(
@@ -125,18 +165,7 @@ export function WordFlip({
       <span className="col-start-1 row-start-1 inline-flex items-baseline justify-start">
         <span className="relative inline-block">
           {displayed}
-          <span
-            aria-hidden
-            className="wf-caret inline-block align-baseline"
-            style={{
-              width: "0.06em",
-              height: "0.95em",
-              marginLeft: "0.04em",
-              transform: "translateY(0.12em)",
-              backgroundColor: "currentColor",
-              opacity: 0.85,
-            }}
-          />
+          {caret}
           {renderOverlay?.()}
         </span>
         {suffix}

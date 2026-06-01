@@ -4,6 +4,22 @@ Hey. Quick rundown of what I changed today, in plain English. No tech jargon.
 
 ---
 
+## Demo on mobile — now fills the screen like the real app
+
+Even after we hid the iPhone frame on phones, the demo still **looked like a small phone screen floating in the page** — a rounded card squeezed into the middle with big empty margins on each side. On a phone that's exactly the "phone inside a phone" feeling we wanted gone.
+
+Now on phones the demo reads as the actual Tabby app — a big rounded app screen with a soft shadow, not a tiny mockup. On desktop/tablet nothing changes; the iPhone frame and its layout come back exactly as before.
+
+**Follow-up — everything fits on one screen, no scrolling.** The first pass made the app screen so tall it sat *behind* the floating Next/Join step bar, and the descriptive copy got pushed below the fold, so you had to scroll past the controls (easy to bump something by accident). Fixed it: the app screen is now sized to sit **fully above** the step bar, so the whole demo — app + steps — fits in a single phone screen with **no scrolling at all**. The per-step title moved into the step bar (the side description column is hidden on phones), so you still get context without scrolling. Tap Next/Join and nothing shifts or hides.
+
+---
+
+## Hero carousel — blank Pro phones fixed
+
+The carousel was showing **empty white phone shells** (especially the two **Pro · Coming later** screens on the right) even though the `.webp` files exist. Cause: a performance shortcut only mounted real screen images within **±2 slides** of the active one; everything else was a blank placeholder. Now every slide renders its screenshot; off-center ones use **lazy loading** so we don't pay for 15 eager downloads.
+
+---
+
 ## Homepage perf — claw animation + FCP/LCP pass (Speed Insights follow-up)
 
 Vercel Speed Insights still flagged **FCP (~1.8s)** and **LCP (~2.6s)** on desktop `/`; the hero **claw scratch animation** could flash, stay invisible, or start late because it only ran after React hydration + GSAP.
@@ -45,7 +61,7 @@ What was slowing it down:
 Fixes:
 
 - Hero headline is **visible on first paint**; claw scratches still animate, text no longer waits.
-- Phone carousel only loads images **within ±2 slots** of the active screen; active image gets `priority`.
+- Phone carousel lazy-loads off-center screens; active image gets `priority` (no more blank placeholder shells).
 - Below-fold sections are **code-split** with `next/dynamic`.
 - Font loads **after idle** via preload hint + deferred stylesheet (fallback font still prevents layout jump).
 - Help agent and Lenis init are **deferred** so they don't compete with hero paint.
